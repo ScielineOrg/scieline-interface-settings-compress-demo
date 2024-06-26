@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Temperature Data Compression</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@2.0.0/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+    <script src="compress.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        #container {
+            width: 80%;
+        }
+        .chart-container {
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            height: 300px;
+        }
+        #controls {
+            margin-bottom: 10px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            align-items: center;
+            width: 100%;
+        }
+        #controls .row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            width: 100%;
+        }
+        #controls label,
+        #controls input,
+        #controls button {
+            font-size: 1rem;
+        }
+
+        #controls input {
+            width: 100px;
+        }
+        .fixed-controls {
+            position: -webkit-sticky;
+            position: sticky;
+            top: 0;
+            background: white;
+            padding: 10px;
+            border-bottom: 1px solid #ccc;
+            width: 100%;
+            z-index: 1000;
+        }
+    </style>
+</head>
+<body>
+    <div id="container">
+        <div id="controls" class="fixed-controls">
+            <div class="row">
+                <label for="minTemp">Min Temperature:</label>
+                <input type="number" id="minTemp" value="10">
+                <label for="maxTemp">Max Temperature:</label>
+                <input type="number" id="maxTemp" value="40">
+                <label for="numPoints">Number of Points:</label>
+                <input type="number" id="numPoints" value="240">
+                <button id="generate">Generate Data</button>
+            </div>
+            <div class="row">
+                <label for="minFreq">Min Frequency (points/day):</label>
+                <input type="number" id="minFreq" value="2">
+                <label for="maxChange">Max Change (%):</label>
+                <input type="number" id="maxChange" value="10">
+                <button id="execute">Execute Compression</button>
+            </div>
+        </div>
+        <div class="chart-container">
+            <canvas id="originalChart"></canvas>
+        </div>
+        <div class="chart-container">
+            <canvas id="compressedChart"></canvas>
+        </div>
+    </div>
+    
+    <script src="script.js"></script>
+</body>
+</html>
