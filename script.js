@@ -3,6 +3,13 @@ $(document).ready(function() {
     let compressedChart = null;
     let data = [];
 
+    const defaultTemperatures = [
+        24.704, 24.941, 25.099, 25.35, 25.366, 25.043, 24.941, 26.447, 26.068, 26.052,
+        26.052, 26.039, 26.039, 26.052, 25.996, 25.94, 25.9, 25.871, 25.83, 25.758,
+        25.646, 25.168, 23.886, 23.873, 24.239, 24.156, 24.551, 24.351, 23.86, 24.858,
+        25.085, 26.308, 26.039, 26.012, 25.969, 25.969, 25.927, 25.927, 25.94
+    ];
+
     const generateData = (numPoints, minTemp, maxTemp) => {
         const generatedData = [];
         const startTime = new Date();
@@ -100,6 +107,28 @@ $(document).ready(function() {
         return chart;
     };
 
+    const loadDefaultData = () => {
+        const generatedData = [];
+        const startTime = new Date();
+        for (let i = 0; i < defaultTemperatures.length; i++) {
+            const time = new Date(startTime.getTime() + i * 3600000); // each hour
+            const value = defaultTemperatures[i];
+            generatedData.push({ time, value });
+        }
+        return generatedData;
+    };
+
+    const loadCsvData = (csvData) => {
+        const values = csvData.split(',').map(v => parseFloat(v.trim())).filter(v => !isNaN(v));
+        const generatedData = [];
+        const startTime = new Date();
+        values.forEach((value, index) => {
+            const time = new Date(startTime.getTime() + index * 3600000); // each hour
+            generatedData.push({ time, value });
+        });
+        return generatedData;
+    };
+
     const updateGraphs = () => {
         const numPoints = $('#numPoints').val();
         const minTemp = $('#minTemp').val();
@@ -107,17 +136,26 @@ $(document).ready(function() {
 
         data = generateData(numPoints, minTemp, maxTemp);
         originalChart = plotGraph(data, 'originalChart', 'Original Data', originalChart, true);
-
-        $('#execute').click(() => {
-            const minFreq = $('#minFreq').val();
-            const maxChange = $('#maxChange').val();
-            const compressedData = compressData(data, maxChange, minFreq);
-            compressedChart = plotGraph(compressedData, 'compressedChart', 'Compressed Data', compressedChart);
-        });
     };
 
     $('#generate').click(updateGraphs);
 
-    // Generate initial data and plot
-    updateGraphs();
+    $('#loadCsvData').click(() => {
+        const csvData = prompt("Please enter CSV data (comma-separated values):");
+        if (csvData) {
+            data = loadCsvData(csvData);
+            originalChart = plotGraph(data, 'originalChart', 'Original Data', originalChart, true);
+        }
+    });
+
+    // Load default data on first load
+    data = loadDefaultData();
+    originalChart = plotGraph(data, 'originalChart', 'Original Data', originalChart, true);
+
+    $('#execute').click(() => {
+        const minFreq = $('#minFreq').val();
+        const maxChange = $('#maxChange').val();
+        const compressedData = compressData(data, maxChange, minFreq);
+        compressedChart = plotGraph(compressedData, 'compressedChart', 'Compressed Data', compressedChart);
+    });
 });
